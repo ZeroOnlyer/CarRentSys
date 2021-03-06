@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>租车管理系统首页</title>
+    <link type="text/css" rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/script/jquery-1.7.2.js">
+    </script>
+    <script>
+        $(function() {
+            //给租借的按钮绑定单击事件
+            $(".addCar2Cart").click(function() {
+                //获取要租借的车辆的id
+                var carID = $(this).attr("ID");
+                //设置请求的url
+                var url = "/addCar2Cart"
+                    //设置请求参数
+                var param = {
+                        "carID": carID
+                    }
+                    //发送Ajax请求
+                $.post(url, param, function(res) {
+                    //将响应信息设置到span中
+                    $("#carMsg").text(res)
+                })
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+    <div id="header">
+        <span class="wel_word">租车管理系统</span> {{if .IsLogin}}
+        <div>
+            <span>欢迎<span class="um_span">{{.Name}}</span>使用租车管理系统</span>
+            <a href="/getCartInFo">我的订单</a>
+            <a href="/logout">注销</a>&nbsp;&nbsp;
+            <a href="/main">返回</a>{{if .SuperID}}
+            <a href="/pages/manager/manager.html">后台管理</a> {{end}}
+        </div>
+        {{else}}
+        <div>
+            <a href="/pages/user/login.html">登录</a>
+            <a href="/pages/user/regist.html">注册</a> &nbsp;&nbsp;
+        </div>
+        {{end}}
+
+    </div>
+
+    <div id="main">
+        <div id="car">
+            <div class="car_cond">
+                <form action="/getPageCarsByPrice" method="POST">
+                    价格：<input type="text" name="min"> 元 -
+                    <input type="text" name="max"> 元 <button>查询</button>
+                </form>
+            </div>
+            <div style="text-align: center">
+                <div>
+                    <span style="color:red" id="carMsg"></span>
+                </div>
+            </div>
+
+            {{range .Cars}}
+            <div class="b_list">
+                <div class="ccar_info">
+                    <br><br><br>
+                    <div class="car_name">
+                        <span class="sp1">车名:</span>
+                        <span class="sp2">{{.Name}}</span>
+                    </div>
+                    <div class="car_price">
+                        <span class="sp1">价格:</span>
+                        <span class="sp2">${{.Price}}</span>
+                    </div>
+                    <div class="car_sales">
+                        <span class="sp1">数量:</span>
+                        <span class="sp2">{{.Num}}</span>
+                    </div>
+                    <div class="car_add">
+                        {{if .Num}}
+                        <button id="{{.ID}}" class="addCar2Cart">租借</button> {{else}}
+                        <span style="color: red">没车啦！</span> {{end}}
+                    </div>
+                </div>
+            </div>
+            {{end}}
+            <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            <div id="page_nav">
+                {{if .IsHasPrev}}
+                <a href="/getPageCarsByPrice?min={{.MinPrice}}&max={{.MaxPrice}}">首页</a>
+                <a href="/getPageCarsByPrice?pageNow={{.GetPrevPage}}&min={{.MinPrice}}&max={{.MaxPrice}}">上一页</a> {{end}} 当前是第{{.PageNow}}页，共{{.PageSum}}页，共{{.PageFinal}}条记录 {{if .IsHasNext}}
+                <a href="/getPageCarsByPrice?pageNow={{.GetNextPage}}&min={{.MinPrice}}&max={{.MaxPrice}}">下一页</a>
+                <a href="/getPageCarsByPrice?pageNow={{.PageSum}}&min={{.MinPrice}}&max={{.MaxPrice}}">末页</a> {{end}}到第
+                <input value="{{.PageNow}}" name="pn" id="pn_input" />页
+                <input type="button" value="确定" id="sub">
+                <script>
+                    //给确定按钮绑定单击事件
+                    $("#sub").click(function() {
+                        //获取输入的页码
+                        var pageNow = $("#pn_input").val();
+                        location = "/getPageCarsByPrice?pageNow=" + pageNow + "&min={{.MinPrice}}&max={{.MaxPrice}}";
+                    });
+                </script>
+            </div>
+
+        </div>
+</body>
+
+</html>

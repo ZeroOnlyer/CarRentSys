@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>车辆管理</title>
+    <link type="text/css" rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/script/jquery-1.7.2.js"></script>
+    <script>
+        $(function() {
+            //给删除车辆的超链接绑定单击事件
+            $(".deleteCar").click(function() {
+                //获取车名
+                var name = $(this).attr("id")
+                    // var flag = confirm("确定要删除【" + name + "】这辆车吗？");
+                    // if(!flag){
+                    //取消删除
+                    //    return false;
+                    // }
+                return confirm("确定要删除【" + name + "】这辆车吗？");
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+    <div id="header">
+        <span class="wel_word">租车管理系统</span>
+        <div>
+            <a href="/main">返回首页</a>
+        </div>
+    </div>
+
+    <div id="main">
+        <table>
+            <tr>
+                <td>名称</td>
+                <td>价格</td>
+                <td>数量</td>
+                <td colspan="2">操作</td>
+            </tr>
+            {{range .Cars}}
+            <tr>
+                <td>{{.Name}}</td>
+                <td>{{.Price}}</td>
+                <td>{{.Num}}</td>
+                <td><a href="/toUpdateCarPage?carID={{.ID}}">修改</a></td>
+                <td><a id="{{.Name}}" class="deleteCar" href="/deleteCar?carID={{.ID}}">删除</a></td>
+            </tr>
+            {{end}}
+
+
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><a href="/pages/manager/car_edit.html">添加车辆</a></td>
+            </tr>
+        </table>
+        <div id="page_nav">
+            {{if .IsHasPrev}}
+            <a href="/getPageCars">首页</a>
+            <a href="/getPageCars?pageNow={{.GetPrevPage}}">上一页</a> {{end}} 当前是第{{.PageNow}}页，共{{.PageSum}}页，共{{.PageFinal}}条记录 {{if .IsHasNext}}
+            <a href="/getPageCars?pageNow={{.GetNextPage}}">下一页</a>
+            <a href="/getPageCars?pageNow={{.PageSum}}">末页</a> {{end}}到第
+            <input value="{{.PageNow}}" name="pn" id="pn_input" />页
+            <input type="button" value="确定" id="sub">
+            <script>
+                //给确定按钮绑定单击事件
+                $("#sub").click(function() {
+                    //获取输入的页码
+                    var pageNow = $("#pn_input").val();
+                    location = "/getPageCars?pageNow=" + pageNow;
+                });
+            </script>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>添加车辆</title>
+    <link type="text/css" rel="stylesheet" href="/static/css/style.css">
+    <style type="text/css">
+        h1 {
+            text-align: center;
+            margin-top: 200px;
+        }
+        
+        h1 a {
+            color: red;
+        }
+        
+        input {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <span class="wel_word">添加车辆</span>
+        <div>
+            <a href="/main">返回首页</a>
+        </div>
+    </div>
+
+    <div id="main">
+        <form action="/addCar" method="POST">
+            <table>
+                <tr>
+                    <td>名称</td>
+                    <td>价格</td>
+                    <td>数量</td>
+                    <td colspan="2">操作</td>
+                </tr>
+                <tr>
+                    <td><input name="name" type="text" value="" /></td>
+                    <td><input name="price" type="text" value="" /></td>
+                    <td><input name="num" type="text" value="" /></td>
+                    <td><input type="submit" value="提交" /></td>
+                </tr>
+            </table>
+        </form>
+
+
+    </div>
+</body>
+
+</html>

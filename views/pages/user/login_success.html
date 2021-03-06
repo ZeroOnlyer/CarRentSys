@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>租车管理系统登录</title>
+    <link type="text/css" rel="stylesheet" href="/static/css/style.css">
+    <style type="text/css">
+        h1 {
+            text-align: center;
+            margin-top: 200px;
+        }
+        
+        h1 a {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <div>
+            <span>欢迎<span class="um_span">{{.Name}}</span>使用租车管理系统</span>
+            <a href="/logout">注销</a>&nbsp;&nbsp;
+            <a href="/getCartInFo">我的订单</a>
+            <a href="/main">返回</a>
+        </div>
+    </div>
+
+    <div id="main">
+        <h1>欢迎回来 <a href="/main">转到主页</a></h1>
+    </div>
+</body>
+
+</html>
