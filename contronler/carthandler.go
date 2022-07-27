@@ -1,53 +1,53 @@
 package contronler
 
 import (
-	"CarSys/dao"
-	"CarSys/model"
-	"CarSys/utils"
+	"PetHome/dao"
+	"PetHome/model"
+	"PetHome/utils"
 	"net/http"
 	"strconv"
 	"text/template"
 )
 
-//AddCar2Cart 租借车辆并加载到订单中
-func AddCar2Cart(w http.ResponseWriter, r *http.Request) {
+//AddService2Cart 购买宠物服务并加载到订单中
+func AddService2Cart(w http.ResponseWriter, r *http.Request) {
 	//判断是否登录
 	flag, session, _ := dao.IsLogin(r)
 	if flag {
 		//已经登录了
-		//获取要租借的车辆的id
-		carID := r.FormValue("carID")
-		//根据车辆的id获取车辆信息
-		car, _ := dao.GetCarByID(carID)
+		//获取要购买的宠物服务的id
+		serviceID := r.FormValue("serviceID")
+		//根据宠物服务的id获取宠物服务信息
+		service, _ := dao.GetServiceByID(serviceID)
 
 		//获取用户的id
 		userID := session.UserID
 		//判断数据库中是否已经有当前用户的订单
 		cart, _ := dao.GetCartByUserID(userID)
 		if cart != nil {
-			//当前用户已经有订单了,需要判断订单中是否已有要租借的这辆汽车
-			cartItem, _ := dao.GetCartItemByCarIDAndCartID(carID, cart.CartID)
+			//当前用户已经有订单了,需要判断订单中是否已有要购买的这项宠物服务
+			cartItem, _ := dao.GetCartItemByCarIDAndCartID(serviceID, cart.CartID)
 			if cartItem != nil {
-				//订单中已经有这辆车，只需要把这辆车所对应的订单项的数量加1，比如租借两次同样的汽车
+				//订单中已经有这项宠物服务，只需要把这项宠物服务所对应的订单项的数量加1，比如购买两次同样的宠物服务
 				//1.获取订单中所有的订单项
 				cartItems := cart.CartItems
 				//2.遍历得到每一个订单项
 				for _, v := range cartItems {
 					//3.找到当前的订单项
-					if cartItem.Car.ID == v.Car.ID {
-						//将订单项中的车辆的数量加1
+					if cartItem.Service.ID == v.Service.ID {
+						//将订单项中的宠物服务的数量加1
 						v.Count = v.Count + 1
 						//将数据库中的该订单项的数量和金额更新
 						dao.UpdateCarCount(v)
 					}
 				}
 			} else {
-				//订单中没有这辆车，就创建一个订单项并添加到数据库中
+				//订单中没有这项宠物服务，就创建一个订单项并添加到数据库中
 				//创建订单项
 				cartItem := &model.CartItem{
-					Car:    car,
-					Count:  1,
-					CartID: cart.CartID,
+					Service: service,
+					Count:   1,
+					CartID:  cart.CartID,
 				}
 				//将订单项添加到切片中
 				cart.CartItems = append(cart.CartItems, cartItem)
@@ -55,7 +55,7 @@ func AddCar2Cart(w http.ResponseWriter, r *http.Request) {
 				dao.AddCartItem(cartItem)
 
 			}
-			//无论订单中是否有这辆要租借的车，都要更新订单中的车辆的总数量和总租金
+			//无论订单中是否有这项要购买的宠物服务，都要更新订单中的宠物服务的总数量和总租金
 			dao.UpdateCart(cart)
 		} else {
 			//当前用户还没有订单，就创建一个订单并添加到数据库中
@@ -69,9 +69,9 @@ func AddCar2Cart(w http.ResponseWriter, r *http.Request) {
 			//2.创建订单项
 			var cartItems []*model.CartItem
 			cartItem := &model.CartItem{
-				Car:    car,
-				Count:  1,
-				CartID: cartID,
+				Service: service,
+				Count:   1,
+				CartID:  cartID,
 			}
 			//3.将订单项添加到切片中
 			cartItems = append(cartItems, cartItem)
@@ -80,10 +80,12 @@ func AddCar2Cart(w http.ResponseWriter, r *http.Request) {
 			//5.将订单保存到数据库中
 			dao.AddCart(cart)
 		}
-		w.Write([]byte("您刚刚租借了" + car.Name + "这辆车！"))
+		//service.Num = service.Num - 1
+		dao.UpdateService(service)
+		w.Write([]byte("您刚刚添加了" + service.Name + "这项服务到购物车！"))
 	} else {
 		//没有登录
-		w.Write([]byte("您还没有登录！不能租借！请先登录！"))
+		w.Write([]byte("您还没有登录！不能购买哟！请先登录！"))
 	}
 }
 
@@ -147,7 +149,7 @@ func DeleteCartItem(w http.ResponseWriter, r *http.Request) {
 			dao.DeleteCartItemByID(cartItemID)
 		}
 	}
-	//更新订单中的车辆的总数量和总租金
+	//更新订单中的宠物服务的总数量和总租金
 	dao.UpdateCart(cart)
 	//再次查询订单信息
 	GetCartInFo(w, r)
@@ -159,7 +161,7 @@ func UpdateCartItem(w http.ResponseWriter, r *http.Request) {
 	cartItemID := r.FormValue("cartItemId")
 	//将订单项的id转换为int64
 	iCartItemID, _ := strconv.ParseInt(cartItemID, 10, 64)
-	//获取用户输入的车辆的数量
+	//获取用户输入的宠物服务的数量
 	carCount := r.FormValue("carCount")
 	//将数量转换为int64
 	iCarCount, _ := strconv.ParseInt(carCount, 10, 64)
@@ -176,9 +178,9 @@ func UpdateCartItem(w http.ResponseWriter, r *http.Request) {
 		//寻找要更新的订单项
 		if v.CartItemID == iCartItemID {
 			//找到要更新的订单项
-			//将当前订单项目的车辆数量设置为用户输入的值
+			//将当前订单项目的宠物服务数量设置为用户输入的值
 			v.Count = iCarCount
-			//更新数据库中该订单项的车辆的数量和总租金
+			//更新数据库中该订单项的宠物服务的数量和总租金
 			dao.UpdateCarCount(v)
 		}
 	}

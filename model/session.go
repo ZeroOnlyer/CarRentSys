@@ -7,4 +7,5 @@ type Session struct {
 	UserID    int    //用户的id
 	Cart      *Cart  //用户的订单
 	OrderID   string //付款单号
+	Orders    []*Order
 }

@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang=en>
 
 <head>
     <meta charset="UTF-8">
-    <title>租车管理系统首页</title>
+    <title>”宠物之家“寄存管理系统首页</title>
     <link type="text/css" rel="stylesheet" href="/static/css/style.css">
     <script src="/static/script/jquery-1.7.2.js">
     </script>
     <script>
         $(function() {
-            //给租借的按钮绑定单击事件
-            $(".addCar2Cart").click(function() {
-                //获取要租借的车辆的id
-                var carID = $(this).attr("ID");
+            //给购买的按钮绑定单击事件
+            $(".addService2Cart").click(function() {
+                //获取要购买的宠物服务的id
+                var serviceID = $(this).attr("ID");
                 //设置请求的url
-                var url = "/addCar2Cart"
+                var url = "/addService2Cart"
                     //设置请求参数
                 var param = {
-                        "carID": carID
+                        "serviceID": serviceID
                     }
                     //发送Ajax请求
                 $.post(url, param, function(res) {
@@ -29,21 +29,24 @@
     </script>
 </head>
 
-<body>
+<body  background ="https://uploadfile.bizhizu.cn/2015/0519/20150519015233366.jpg.source.jpg" style="background-repeat: no-repeat;background-size: 100% 100%;
+background-attachment: fixed;">>
 
     <div id="header">
-        <span class="wel_word">租车管理系统</span> {{if .IsLogin}}
+      <span class="wel_word" style="color:#398f8a">”宠物之家“</span>
+        {{if .IsLogin}}
         <div>
-            <span>欢迎<span class="um_span">{{.Name}}</span>使用租车管理系统</span>
-            <a href="/getCartInFo">我的订单</a>
-            <a href="/logout">注销</a>&nbsp;&nbsp;
-            <a href="/main">返回</a>{{if .SuperID}}
-            <a href="/pages/manager/manager.html">后台管理</a> {{end}}
+            <span style="color: #000000">欢迎<span class="um_span" style="color: #398f8a;">{{.Name}}</span>使用”宠物之家“寄存管理系统</span>
+            <a href="/getCartInFo" style="color: #000000">我的购物车</a>
+            <a href="/getMyOrder" style="color: #000000">我的订单</a>
+            <a href="/logout" style="color: #000000">注销</a>&nbsp;&nbsp;
+            <a href="/main" style="color: #000000">返回</a>{{if .SuperID}}
+            <a href="/pages/manager/manager.html "  style="color: #000000">后台管理</a> {{end}}
         </div>
         {{else}}
         <div>
-            <a href="/pages/user/login.html">登录</a>
-            <a href="/pages/user/regist.html">注册</a> &nbsp;&nbsp;
+            <a href="/pages/user/login.html"  style="color: #000000">登录</a>
+            <a href="/pages/user/regist.html"  style="color: #000000">注册</a> &nbsp;&nbsp;
         </div>
         {{end}}
 
@@ -52,7 +55,7 @@
     <div id="main">
         <div id="car">
             <div class="car_cond">
-                <form action="/getPageCarsByPrice" method="POST">
+                <form action="/getPageServicesByPrice" method="POST">
                     价格：<input type="text" name="min"> 元 -
                     <input type="text" name="max"> 元 <button>查询</button>
                 </form>
@@ -63,12 +66,14 @@
                 </div>
             </div>
 
-            {{range .Cars}}
+            {{range .Services}}
             <div class="b_list">
+                <div class="img_div">
+                    <img class="car_img" alt="" src="{{.ImgPath}}" />
+                </div>
                 <div class="ccar_info">
-                    <br><br><br>
                     <div class="car_name">
-                        <span class="sp1">车名:</span>
+                        <span class="sp1">服务名:</span>
                         <span class="sp2">{{.Name}}</span>
                     </div>
                     <div class="car_price">
@@ -81,8 +86,8 @@
                     </div>
                     <div class="car_add">
                         {{if .Num}}
-                        <button id="{{.ID}}" class="addCar2Cart">租借</button> {{else}}
-                        <span style="color: red">没车啦！</span> {{end}}
+                        <button id="{{.ID}}" class="addService2Cart">加入购物车</button> {{else}}
+                        <span style="color: red">售罄啦！</span> {{end}}
                     </div>
                 </div>
             </div>
@@ -107,6 +112,7 @@
             </div>
 
         </div>
+    </div>
 </body>
 
 </html>

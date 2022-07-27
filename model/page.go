@@ -2,16 +2,16 @@ package model
 
 //Page 定义分页
 type Page struct {
-	Cars      []*Car //每一页的所有车辆信息
-	PageNow   int64  //当前页
-	PageLen   int64  //每一页的显示数量
-	PageSum   int64  //总页数
-	PageFinal int64  //一共有多少辆车
-	MinPrice  string //价格范围
-	MaxPrice  string //价格范围
-	IsLogin   bool   //判断是否登录
-	Name      string //用户的姓名
-	SuperID   bool   //判断是否是管理员
+	Services  []*Service //每一页的所有宠物服务信息
+	PageNow   int64      //当前页
+	PageLen   int64      //每一页的显示数量
+	PageSum   int64      //总页数
+	PageFinal int64      //一共有多少项宠物服务
+	MinPrice  string     //价格范围
+	MaxPrice  string     //价格范围
+	IsLogin   bool       //判断是否登录
+	Name      string     //用户的姓名
+	SuperID   bool       //判断是否是管理员
 }
 
 //IsHasPrev 判断是否有上一页

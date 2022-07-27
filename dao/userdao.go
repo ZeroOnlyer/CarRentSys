@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"CarSys/model"
-	"CarSys/utils"
+	"PetHome/model"
+	"PetHome/utils"
 )
 
 //CheckUserNameAndPassword 根据账号和密码从数据库查询一条记录

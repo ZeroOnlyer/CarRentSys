@@ -1,9 +1,9 @@
 package contronler
 
 import (
-	"CarSys/dao"
-	"CarSys/model"
-	"CarSys/utils"
+	"PetHome/dao"
+	"PetHome/model"
+	"PetHome/utils"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -17,14 +17,17 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		//获取cookie的value值
 		cookieValue := cookie.Value
 		//删除数据库中对应的session
-		dao.DeleteSession(cookieValue)
+		err := dao.DeleteSession(cookieValue)
+		if err != nil {
+			return
+		}
 		//设置cookie失效
 		cookie.MaxAge = -1
 		//将修改后的cookie发送给浏览器
 		http.SetCookie(w, cookie)
 	}
 	//去首页
-	GetPageCarsByPrice(w, r)
+	GetPageServicesByPrice(w, r)
 
 }
 
@@ -34,7 +37,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	flag, _, _ := dao.IsLogin(r)
 	if flag {
 		//已经登录，直接去首页
-		GetPageCarsByPrice(w, r)
+		GetPageServicesByPrice(w, r)
 	} else {
 		//获取账号和密码clear
 		username := r.PostFormValue("username")

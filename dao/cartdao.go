@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"CarSys/model"
-	"CarSys/utils"
+	"PetHome/model"
+	"PetHome/utils"
 )
 
 //AddCart 向订单表中插入订单
@@ -38,7 +38,7 @@ func GetCartByUserID(userID int) (*model.Cart, error) {
 	return cart, nil
 }
 
-//UpdateCart 更新订单中车辆的总数量和总金额
+//UpdateCart 更新订单中宠物服务的总数量和总金额
 func UpdateCart(cart *model.Cart) error {
 	sqlStr := "update carts set total_count=?,total_amount=? where id = ?"
 	_, err := utils.Db.Exec(sqlStr, cart.GetTotalCount(), cart.GetTotalAmount(), cart.CartID)

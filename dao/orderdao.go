@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"CarSys/model"
-	"CarSys/utils"
+	"PetHome/model"
+	"PetHome/utils"
 )
 
 //AddOrder 向数据库中插入最终付款单
@@ -13,4 +13,44 @@ func AddOrder(order *model.Order) error {
 		return err
 	}
 	return nil
+}
+
+//GetOrders 获取数据库中所有的订单
+func GetOrders() ([]*model.Order, error) {
+	//写sql语句
+	sql := "select id,create_time,total_count,total_amount,state,user_id from orders"
+	//执行
+	rows, err := utils.Db.Query(sql)
+	if err != nil {
+		return nil, err
+	}
+	var orders []*model.Order
+	for rows.Next() {
+		order := &model.Order{}
+		rows.Scan(&order.OrderID, &order.CreateTime, &order.TotalCount, &order.TotalAmount, &order.State, &order.UserID)
+		orders = append(orders, order)
+	}
+	return orders, nil
+}
+
+//GetMyOrders 获取我的订单
+func GetMyOrders(userID int) ([]*model.Order, error) {
+	//写sql语句
+	sql := "select id,create_time,total_count,total_amount,state,user_id from orders where user_id = ?"
+	//执行
+	rows, err := utils.Db.Query(sql, userID)
+	if err != nil {
+		return nil, err
+	}
+	//声明一个切片
+	var orders []*model.Order
+	for rows.Next() {
+		//创建Order
+		order := &model.Order{}
+		//给Order中的字段赋值
+		rows.Scan(&order.OrderID, &order.CreateTime, &order.TotalCount, &order.TotalAmount, &order.State, &order.UserID)
+		//将Order添加到切片中
+		orders = append(orders, order)
+	}
+	return orders, nil
 }

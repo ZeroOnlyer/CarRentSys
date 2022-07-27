@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"CarSys/model"
-	"CarSys/utils"
+	"PetHome/model"
+	"PetHome/utils"
 	"net/http"
 )
 
@@ -50,7 +50,7 @@ func IsLogin(r *http.Request) (bool, *model.Session, int) {
 	if cookie != nil {
 		//获取cookie的value
 		cookieValue := cookie.Value
-		//根据cookievalue去数据库中查询session
+		//根据cookie value去数据库中查询session
 		session, _ := GetSessionByID(cookieValue)
 		if session.UserID > 0 {
 			//已经登录
